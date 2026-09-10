@@ -76,7 +76,7 @@ select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns=
 .add-row{margin-top:4px;background:transparent;border:1px dashed var(--border-lit);color:var(--blue);border-radius:10px;
   padding:10px 14px;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:600;transition:.15s}
 .add-row:hover{background:rgba(43,157,255,.08);border-color:var(--blue)}
-[data-when]{display:none}[data-when].show{display:block;animation:rise .3s ease}
+[data-when]{display:none!important}[data-when].show{display:block!important;animation:rise .3s ease}[data-when].show{margin-top:14px}
 .callout{border-left:3px solid var(--gold);background:rgba(255,176,32,.06);border-radius:0 10px 10px 0;
   padding:12px 15px;font-size:.86rem;color:#f2d9a8;margin-top:4px}
 .callout.blue{border-color:var(--blue);background:rgba(43,157,255,.07);color:#bfe0ff}
@@ -198,8 +198,9 @@ const STEPS=[
    <div style="display:grid;gap:8px">
      <input type="text" data-key="Contacto - Nombre" data-req placeholder="Nombre completo">
      <input type="text" data-key="Contacto - Cargo" placeholder="Cargo">
-     <input type="tel" data-key="Contacto - Teléfono" placeholder="Teléfono / WhatsApp">
-     <input type="email" data-key="Contacto - Correo" placeholder="Correo electrónico"></div></div>
+     <input type="tel" data-key="Contacto - Teléfono" data-req placeholder="WhatsApp (ej: 0999999999)">
+     <input type="email" data-key="Contacto - Correo" placeholder="Correo electrónico"></div>
+   <div class="callout blue">📲 A este número de WhatsApp te enviaremos una copia de tus requerimientos como respaldo. Asegúrate de que sea correcto.</div></div>
  <div class="field"><div class="q">Ciudad y país</div>
    <input type="text" data-key="Ciudad / País" placeholder="Ej: Quito, Ecuador"></div>`},
 
@@ -253,7 +254,7 @@ const STEPS=[
      <textarea data-key="Contenido de la proforma" placeholder="Ej: Logo de la empresa, detalle del servicio, precio, IVA, validez de 15 días, datos de contacto."></textarea></div></div>
  <div class="field"><div class="q">¿El agente maneja pagos / cobros?</div>
    ${radio("pagos",[{v:"Sí, genera links de pago",set:"pay"},{v:"No cobra, solo informa",set:null},{v:"A definir",set:null}])}
-   <div data-when="pagos=Sí, genera links de pago" style="margin-top:14px;display:grid;gap:14px">
+   <div data-when="pagos=Sí, genera links de pago" style="margin-top:14px;gap:14px">
      <div><label class="mini">¿Tienen pasarela de pago (Payphone u otra)?</label>
        ${radio("pasarela",["Sí, Payphone activa","No, hay que crearla","Otra pasarela","Poseidón nos ayuda a configurar"])}</div>
      <div><label class="mini">¿Los pagos son en una cuota o admiten cuotas?</label>
@@ -297,7 +298,7 @@ const STEPS=[
  html:`
  <div class="field"><div class="q">¿Necesitas reportes de la actividad del agente?</div>
    ${radio("reportes",[{v:"Sí",set:"rep"},{v:"No por ahora",set:null}],true)}
-   <div data-when="reportes=Sí" style="margin-top:14px;display:grid;gap:14px">
+   <div data-when="reportes=Sí" style="margin-top:14px;gap:14px">
      <div><label class="mini">¿Con qué frecuencia?</label>
        ${radio("rep_freq",["Diario","Semanal","Mensual","Diario + semanal"],true)}</div>
      <div><label class="mini">¿Qué te interesa medir?</label>
@@ -332,10 +333,9 @@ const STEPS=[
  <div class="decl">
    <h3>Declaración del cliente</h3>
    <div class="legal">Declaro que la información proporcionada en este documento es verídica y completa, y que constituye la base acordada para el diseño y desarrollo del agente de Inteligencia Artificial por parte de <b>Poseidón MK</b>. Entiendo que cualquier funcionalidad no descrita aquí queda fuera del alcance inicial del proyecto y podrá cotizarse por separado. Este documento sirve como constancia de los requerimientos levantados en esta etapa.</div>
+   <div id="firmaResumen" class="callout blue" style="margin-bottom:14px">Completa el paso 1 para ver aquí tus datos.</div>
    <div class="grid2">
-     <div><label class="mini">Nombre de quien declara <span style="color:var(--gold)">*</span></label><input type="text" data-key="Firma - Nombre" data-req placeholder="Nombre completo"></div>
-     <div><label class="mini">Cargo</label><input type="text" data-key="Firma - Cargo" placeholder="Cargo en la empresa"></div>
-     <div><label class="mini">Cédula / DNI <span style="color:var(--gold)">*</span></label><input type="text" data-key="Firma - Cédula" data-req placeholder="Número de identificación"></div>
+     <div><label class="mini">Cédula / RUC / DNI <span style="color:var(--gold)">*</span></label><input type="text" data-key="Firma - Cédula" data-req placeholder="Número de identificación"></div>
      <div><label class="mini">Fecha</label><input type="date" data-key="Firma - Fecha"></div>
    </div>
    <label class="consent"><input type="checkbox" id="consentBox"><span class="box">${chk}</span>
@@ -355,7 +355,7 @@ STEPS.forEach((s,i)=>{
       ${i>0?'<button type="button" class="btn btn-ghost" data-back>← Atrás</button>':''}
       <div class="spacer"></div>
       ${i<STEPS.length-1?'<button type="button" class="btn btn-primary" data-next>Siguiente →</button>'
-        :'<button type="button" class="btn btn-gold" id="downloadBtn">⬇ Descargar PDF</button>'}
+        :'<button type="button" class="btn btn-gold" id="downloadBtn">📨 Enviar requerimientos a Poseidón</button>'}
     </div>`;
   form.appendChild(sec);
 });
@@ -389,6 +389,16 @@ function show(n){
   cur=n;const pct=Math.round(((n+1)/total)*100);
   pfill.style.width=pct+'%';pcur.textContent=n+1;pname.textContent=STEPS[n].name;ppct.textContent=pct+'%';
   refreshConditionals(document.querySelector(`.step[data-step="${n}"]`));
+  // Rellenar resumen de firma con datos del paso 1
+  if(n===total-1){
+    const fr=document.getElementById('firmaResumen');
+    if(fr){
+      const nom=(document.querySelector('[data-key="Contacto - Nombre"]')||{}).value||'';
+      const emp=(document.querySelector('[data-key="Empresa"]')||{}).value||'';
+      const car=(document.querySelector('[data-key="Contacto - Cargo"]')||{}).value||'';
+      fr.innerHTML = (nom||emp) ? `Yo, <b>${nom||'—'}</b>${car?' ('+car+')':''} en representación de <b>${emp||'—'}</b>, declaro lo siguiente:` : 'Completa el paso 1 (empresa y contacto) para continuar.';
+    }
+  }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 form.addEventListener('click',e=>{
@@ -423,15 +433,72 @@ form.addEventListener('change',e=>{
 });
 
 /* ===== Descargar PDF ===== */
-document.getElementById('downloadBtn').addEventListener('click',()=>{
-  const nombre=document.querySelector('[data-key="Firma - Nombre"]').value.trim();
+// URL del webhook de n8n (se configura al montar el workflow)
+const WEBHOOK_URL = "https://mkposeidon.com/webhook/requerimientos";
+
+document.getElementById('downloadBtn').addEventListener('click',async ()=>{
+  const nombre=document.querySelector('[data-key="Contacto - Nombre"]').value.trim();
+  const empresa=document.querySelector('[data-key="Empresa"]').value.trim();
+  const tel=document.querySelector('[data-key="Contacto - Teléfono"]').value.trim();
   const ced=document.querySelector('[data-key="Firma - Cédula"]').value.trim();
   const consent=document.getElementById('consentBox').checked;
-  if(!nombre||!ced||!consent){document.getElementById('declErr').classList.add('show');return;}
+  if(!nombre||!empresa||!tel||!ced||!consent){document.getElementById('declErr').classList.add('show');return;}
   document.getElementById('declErr').classList.remove('show');
-  buildResumen();
-  setTimeout(()=>window.print(),120);
+
+  // Recolectar TODAS las respuestas
+  const respuestas=recolectarTodo();
+
+  // Enviar a n8n (no bloquea la descarga si falla)
+  const btn=document.getElementById('downloadBtn');
+  const txtOrig=btn.textContent;
+  btn.textContent="Enviando...";btn.disabled=true;
+  try{
+    await fetch(WEBHOOK_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(respuestas)
+    });
+    btn.textContent="✅ ¡Enviado!";
+    setTimeout(()=>{alert("¡Listo! Tus requerimientos fueron enviados a Poseidón MK. Te llegará una copia por WhatsApp al número que indicaste. 🔱");},300);
+  }catch(e){
+    btn.textContent="⚠️ Guarda tu PDF";
+    alert("No se pudo enviar automáticamente, pero puedes descargar tu PDF y enviárnoslo. 🔱");
+    buildResumen();
+    setTimeout(()=>window.print(),400);
+  }
+  setTimeout(()=>{btn.textContent=txtOrig;btn.disabled=false;},4000);
 });
+
+// Recolecta todas las respuestas del formulario en un objeto
+function recolectarTodo(){
+  const g=id=>{const s=document.querySelector(`input[name="${id}"]:checked`);return s?s.value:'';};
+  const labelsChk=name=>[...document.querySelectorAll(`input[name="${name}"]:checked`)].map(i=>i.value);
+  const v=key=>{const el=document.querySelector(`[data-key="${key}"]`);return el?el.value.trim():'';};
+  function rep(key){const rows=[];const seen=new Set();
+    document.querySelectorAll(`[data-rep="${key}"]`).forEach(inp=>{const r=inp.closest('.repeat-row');
+      if(!seen.has(r)){seen.add(r);const cols=[...r.querySelectorAll(`[data-rep="${key}"]`)].map(x=>x.value.trim()).filter(Boolean);if(cols.length)rows.push(cols.join(' · '));}});
+    return rows;}
+  return {
+    empresa:v("Empresa"), giro:v("A qué se dedica"),
+    sitio_web:v("Sitio web"), instagram:v("Instagram"), facebook:v("Facebook"), otra_red:v("TikTok / Otra red"),
+    contacto_nombre:v("Contacto - Nombre"), contacto_cargo:v("Contacto - Cargo"),
+    contacto_telefono:v("Contacto - Teléfono"), contacto_correo:v("Contacto - Correo"),
+    ciudad_pais:v("Ciudad / País"),
+    comportamiento:v("Descripción del comportamiento"), nombre_agente:v("Nombre del agente"),
+    objetivo:g("objetivo"), tono:g("tono"), saludo:v("Saludo inicial"),
+    horario:g("horario")==="Horario específico"?v("Horario específico"):g("horario"), seguimiento:g("seguimiento"),
+    tipo_oferta:g("tipo_oferta"), oferta:rep("oferta"), material:g("material"),
+    proformas:g("proformas"), contenido_proforma:v("Contenido de la proforma"),
+    pagos:g("pagos"), pasarela:g("pasarela"), cuotas:g("cuotas"), comprobante:g("comprobante"), factura:g("factura"),
+    datos_capturar:labelsChk("datos"), datos_adicionales:v("Datos adicionales"), almacen:g("almacen"),
+    deriva:g("deriva"), casos_deriva:labelsChk("casos_deriva"), personas_atienden:rep("contacto"), supervisores:rep("visor"),
+    reportes:g("reportes"), rep_freq:g("rep_freq"), rep_metricas:labelsChk("rep_metricas"), rep_medio:g("rep_medio"),
+    remarketing:g("remarketing"), rmk_target:labelsChk("rmk_target"),
+    num_wa_agente:g("num_wa")==="Sí, tengo un número dedicado listo"?v("Número WhatsApp"):g("num_wa"),
+    fuera_alcance:labelsChk("fuera"), notas:v("Notas libres"),
+    cedula:v("Firma - Cédula"), fecha_firma:v("Firma - Fecha")||new Date().toLocaleDateString('es-EC')
+  };
+}
 
 /* ===== Construir resumen imprimible ===== */
 function labelsChecked(name){return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(i=>i.value);}
@@ -502,7 +569,7 @@ function buildResumen(){
   <div class="r-decl"><h3>Declaración de conformidad</h3>
     <div>Declaro que la información proporcionada es verídica y completa, y constituye la base acordada para el desarrollo del agente de IA por parte de Poseidón MK. Las funcionalidades no descritas quedan fuera del alcance inicial.</div>
     <div class="r-sign">
-      <div>${val("Firma - Nombre")||'—'}<br><span style="font-size:8pt">${val("Firma - Cargo")||''} · C.I. ${val("Firma - Cédula")||'—'}</span><br><span style="font-size:8pt">Cliente</span></div>
+      <div>${val("Contacto - Nombre")||'—'}<br><span style="font-size:8pt">${val("Contacto - Cargo")||''} · C.I./RUC ${val("Firma - Cédula")||'—'}</span><br><span style="font-size:8pt">${val("Empresa")||'Cliente'}</span></div>
       <div>Poseidón MK<br><span style="font-size:8pt">Automatización con IA</span><br><span style="font-size:8pt">poseidonmk.com</span></div>
     </div></div>
   <div class="r-foot">Documento generado el ${today} · Poseidón MK — Con esta información se elaborará el Documento de Alcance formal.</div>`;
