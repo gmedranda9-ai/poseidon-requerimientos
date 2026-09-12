@@ -202,7 +202,10 @@ const STEPS=[
      <input type="email" data-key="Contacto - Correo" placeholder="Correo electrónico"></div>
    <div class="callout blue">📲 A este número de WhatsApp te enviaremos una copia de tus requerimientos como respaldo. Asegúrate de que sea correcto.</div></div>
  <div class="field"><div class="q">Ciudad y país</div>
-   <input type="text" data-key="Ciudad / País" placeholder="Ej: Quito, Ecuador"></div>`},
+   <input type="text" data-key="Ciudad / País" placeholder="Ej: Quito, Ecuador"></div>
+ <div class="field"><div class="q">¿A qué sector pertenece tu empresa? <span class="req">*</span></div>
+   <div class="hint">Esto nos ayuda a hacerte preguntas específicas de tu rubro más adelante.</div>
+   ${radio("sector",["Salud","Educación","Automotriz","Comercio / Productos","Servicios profesionales","Hotelería / Turismo","Otro"],true)}</div>`},
 
 {name:"Tu agente", kicker:"02 · El agente", title:"¿Cómo quieres que trabaje tu agente?",
  intro:"Aquí defines la personalidad y el trabajo del agente. Esta es la parte más importante: describe con tus palabras qué esperas que haga.",
@@ -231,20 +234,122 @@ const STEPS=[
  <div class="field"><div class="q">Si alguien escribe pero no está listo para comprar, ¿el agente hace seguimiento?</div>
    ${radio("seguimiento",["Sí, al día siguiente","Sí, a los 2 días","No, sin seguimiento","A definir"],true)}</div>`},
 
-{name:"Servicios", kicker:"03 · Oferta", title:"¿Qué ofreces? Servicios, productos o cursos",
- intro:"El agente necesita conocer tu oferta al detalle para informar y cotizar bien. Agrega todo lo que vendes.",
+{name:"Tu sector", kicker:"03B · Especialización", title:"Preguntas específicas de tu rubro",
+ intro:"Según el sector que elegiste, estas preguntas nos ayudan a crear un agente hecho a la medida de tu negocio.",
  html:`
- <div class="field"><div class="q">¿Qué vende tu empresa?</div>
-   ${radio("tipo_oferta",["Servicios","Productos","Cursos / capacitaciones","Mixto"],true)}</div>
+ <!-- SALUD -->
+ <div data-when="sector=Salud">
+   <div class="field"><div class="q">¿Qué especialidad(es) o servicios de salud ofrece?</div>
+     <textarea data-key="Salud - Especialidades" placeholder="Ej: Odontología general, ortodoncia, limpieza dental"></textarea></div>
+   <div class="field"><div class="q">¿Cómo maneja las citas?</div>
+     ${radio("salud_citas",["Horarios fijos por profesional","Orden de llegada","Ambos"],true)}</div>
+   <div class="field"><div class="q">¿Atiende con varios profesionales/doctores?</div>
+     ${radio("salud_profesionales",["Uno solo","Varios (el agente pregunta con quién)"],true)}</div>
+   <div class="field"><div class="q">¿El agente debe confirmar la asistencia a la cita?</div>
+     ${radio("salud_confirma",["Sí, un día antes","Sí, el mismo día","No"],true)}</div>
+   <div class="field"><div class="q">¿El paciente debe indicar el motivo de consulta al agendar?</div>
+     ${radio("salud_motivo",["Sí","No"],true)}</div>
+   <div class="field"><div class="q">¿Atiende seguros médicos o solo particular?</div>
+     <input type="text" data-key="Salud - Seguros" placeholder="Ej: Solo particular / Acepto seguro X"></div>
+ </div>
+ <!-- EDUCACIÓN -->
+ <div data-when="sector=Educación">
+   <div class="field"><div class="q">¿Qué tipo de formación ofrece?</div>
+     <textarea data-key="Edu - Formación" placeholder="Ej: Cursos de inglés, carreras técnicas, talleres"></textarea></div>
+   <div class="field"><div class="q">¿Los cursos/clases tienen cupos limitados?</div>
+     ${radio("edu_cupos",["Sí","No"],true)}</div>
+   <div class="field"><div class="q">¿Cómo son las inscripciones?</div>
+     ${radio("edu_inscripciones",["Abiertas todo el año","Por períodos (mensual/trimestral)","Por fechas de inicio específicas"],true)}</div>
+   <div class="field"><div class="q">¿Las clases son presenciales, virtuales o ambas?</div>
+     ${radio("edu_modalidad",["Presencial","Virtual","Híbrido"],true)}</div>
+   <div class="field"><div class="q">¿Entregan certificado o título al finalizar?</div>
+     ${radio("edu_certificado",["Sí","No"],true)}</div>
+   <div class="field"><div class="q">¿El agente debe informar requisitos de inscripción?</div>
+     <input type="text" data-key="Edu - Requisitos" placeholder="Ej: Edad mínima, documentos, nivel previo"></div>
+ </div>
+ <!-- AUTOMOTRIZ -->
+ <div data-when="sector=Automotriz">
+   <div class="field"><div class="q">¿Qué servicios ofrece?</div>
+     <textarea data-key="Auto - Servicios" placeholder="Ej: Mecánica general, lavado, cambio de aceite, revisión técnica"></textarea></div>
+   <div class="field"><div class="q">¿El agente debe pedir datos del vehículo? (marca, modelo, año, placa)</div>
+     ${radio("auto_datos",["Sí, todos","Solo algunos","No hace falta"],true)}</div>
+   <div class="field"><div class="q">¿Cómo cotiza?</div>
+     ${radio("auto_cotiza",["Precio fijo por servicio","Requiere revisar el vehículo primero","Depende del caso"],true)}</div>
+   <div class="field"><div class="q">¿Quiere recordar mantenimientos a sus clientes?</div>
+     ${radio("auto_recordar",["Sí","No","Más adelante"],true)}</div>
+   <div class="field"><div class="q">¿Agenda por tipo de trabajo? (los tiempos varían)</div>
+     ${radio("auto_agenda",["Sí","No, un horario general"],true)}</div>
+   <div class="field"><div class="q">¿Atiende a domicilio o solo en taller?</div>
+     ${radio("auto_domicilio",["Solo taller","También domicilio","Depende"],true)}</div>
+ </div>
+ <!-- COMERCIO -->
+ <div data-when="sector=Comercio / Productos">
+   <div class="field"><div class="q">¿Qué tipo de productos vende?</div>
+     <textarea data-key="Comercio - Productos" placeholder="Ej: Ropa, electrónica, insumos de belleza"></textarea></div>
+   <div class="field"><div class="q">¿El agente debe manejar disponibilidad/stock?</div>
+     ${radio("com_stock",["Sí, mostrar qué hay disponible","No, siempre hay","A definir"],true)}</div>
+   <div class="field"><div class="q">¿Hace envíos?</div>
+     ${radio("com_envios",["Local","Nacional","Local y nacional","Solo retiro en tienda"],true)}</div>
+   <div class="field"><div class="q">¿Qué métodos de entrega maneja?</div>
+     ${radio("com_entrega",["Retiro en tienda","Delivery propio","Courier/encomienda","Varios"],true)}</div>
+   <div class="field"><div class="q">¿Los precios varían por cantidad? (mayoreo)</div>
+     ${radio("com_mayoreo",["Sí","No"],true)}</div>
+   <div class="field"><div class="q">¿Maneja catálogo con fotos de los productos?</div>
+     ${radio("com_catalogo",["Sí, lo tengo","Hay que armarlo","Solo lista de precios"],true)}</div>
+ </div>
+ <!-- SERVICIOS PROFESIONALES -->
+ <div data-when="sector=Servicios profesionales">
+   <div class="field"><div class="q">¿Qué servicios profesionales ofrece?</div>
+     <textarea data-key="Prof - Servicios" placeholder="Ej: Asesoría legal, contabilidad, consultoría de marketing"></textarea></div>
+   <div class="field"><div class="q">¿Cómo cobra?</div>
+     ${radio("prof_cobro",["Por consulta","Por proyecto","Por hora","Igualas/mensualidad"],true)}</div>
+   <div class="field"><div class="q">¿Ofrece una primera consulta o cotización gratis?</div>
+     ${radio("prof_gratis",["Sí","No"],true)}</div>
+   <div class="field"><div class="q">¿El agente debe calificar al prospecto antes de agendar?</div>
+     ${radio("prof_califica",["Sí, hacer preguntas de filtro","No, agendar a todos"],true)}</div>
+   <div class="field"><div class="q">¿El servicio requiere reunión/consulta para cotizar?</div>
+     ${radio("prof_reunion",["Sí, siempre","A veces","No, tengo precios fijos"],true)}</div>
+ </div>
+ <!-- HOTELERÍA -->
+ <div data-when="sector=Hotelería / Turismo">
+   <div class="field"><div class="q">¿Qué ofrece?</div>
+     <textarea data-key="Hotel - Oferta" placeholder="Ej: Hotel, hostal, tours, restaurante, paquetes"></textarea></div>
+   <div class="field"><div class="q">¿Maneja reservas por fechas/disponibilidad?</div>
+     ${radio("hotel_reservas",["Sí","No"],true)}</div>
+   <div class="field"><div class="q">¿Tiene diferentes tipos de habitación/paquetes/servicios? ¿Cuáles?</div>
+     <textarea data-key="Hotel - Tipos" placeholder="Ej: Habitación simple, doble, suite; paquete romántico"></textarea></div>
+   <div class="field"><div class="q">¿Cobra un anticipo para confirmar la reserva?</div>
+     ${radio("hotel_anticipo",["Sí, un %","Sí, monto fijo","No, se paga al llegar"],true)}</div>
+   <div class="field"><div class="q">¿El agente debe informar políticas? (check-in/out, cancelación, mascotas)</div>
+     ${radio("hotel_politicas",["Sí","No"],true)}</div>
+   <div class="field"><div class="q">¿Atiende clientes locales, nacionales o extranjeros?</div>
+     ${radio("hotel_clientes",["Local","Nacional","También extranjeros"],true)}</div>
+ </div>
+ <!-- OTRO -->
+ <div data-when="sector=Otro">
+   <div class="field"><div class="q">¿A qué se dedica específicamente tu negocio? <span class="req">*</span></div>
+     <textarea data-key="Otro - Dedicación" placeholder="Cuéntanos con detalle a qué se dedica tu negocio"></textarea></div>
+   <div class="field"><div class="q">¿Qué debería saber o hacer tu agente que sea único de tu rubro?</div>
+     <textarea data-key="Otro - Especial" style="min-height:110px" placeholder="Todo lo que consideres importante para que el agente entienda tu negocio"></textarea></div>
+   <div class="field"><div class="q">¿Tu negocio agenda citas/reservas?</div>
+     ${radio("otro_agenda",["Sí","No"],true)}</div>
+   <div class="field"><div class="q">¿Tu negocio maneja inventario/stock?</div>
+     ${radio("otro_stock",["Sí","No"],true)}</div>
+ </div>
+ <div class="callout blue" id="sectorVacio" style="display:none">Selecciona tu sector en el paso 1 para ver preguntas específicas de tu rubro.</div>`},
+
+{name:"Servicios", kicker:"04 · Oferta", title:"Tu lista de precios",
+ intro:"Ahora el detalle concreto: agrega cada servicio o producto con su precio. Esto es lo que el agente usará para cotizar y generar proformas.",
+ html:`
  <div class="field"><div class="q">Lista de tu oferta <span class="req">*</span></div>
-   <div class="hint">Agrega cada servicio/producto con su precio. El agente usará esto para informar y generar proformas.</div>
+   <div class="hint">Agrega cada servicio/producto con su precio. Mientras más completo, mejor cotizará el agente.</div>
    <div id="ofertaRows"></div>
    <button type="button" class="add-row" data-add="oferta">+ Agregar otro</button></div>
  <div class="field"><div class="q">¿Tienes material digital (catálogo, brochure, lista de precios)?</div>
    ${radio("material",["Sí, ya existe en PDF","Sí, pero hay que actualizarlo","No, hay que crearlo","Solo tengo la info en texto"],true)}
    <div class="callout">📎 Si ya lo tienes, podrás enviárnoslo después junto a este documento.</div></div>`},
 
-{name:"Proformas y pagos", kicker:"04 · Dinero", title:"Proformas, cobros y facturación",
+{name:"Proformas y pagos", kicker:"05 · Dinero", title:"Proformas, cobros y facturación",
  intro:"Definamos si el agente cotiza, cobra y factura. Si tu agente es solo informativo, puedes saltar la parte de pagos.",
  html:`
  <div class="field"><div class="q">¿El agente debe generar proformas o cotizaciones?</div>
@@ -265,7 +370,7 @@ const STEPS=[
        ${radio("factura",["Sí, factura electrónica (Datil)","No emite facturas","Se factura aparte / presencial","A definir"])}</div>
    </div></div>`},
 
-{name:"Datos del cliente", kicker:"05 · Datos", title:"¿Qué datos debe registrar de cada cliente?",
+{name:"Datos del cliente", kicker:"06 · Datos", title:"¿Qué datos debe registrar de cada cliente?",
  intro:"Marca los datos que el agente debe pedir y guardar de cada persona que escribe.",
  html:`
  <div class="field"><div class="q">Datos que el agente debe capturar</div>
@@ -276,7 +381,7 @@ const STEPS=[
    ${radio("almacen",["Poseidón lo gestiona (base de datos en la nube)","Que me lo entreguen en Excel","Google Sheets (en la nube)","A definir"],true)}
    <div class="callout blue">🔒 Por defecto Poseidón guarda todo de forma segura en la nube y tú accedes cuando quieras.</div></div>`},
 
-{name:"Derivación y visor", kicker:"06 · Control humano", title:"Derivación a humano y supervisión",
+{name:"Derivación y visor", kicker:"07 · Control humano", title:"Derivación a humano y supervisión",
  intro:"Aquí defines cuándo el agente pasa la conversación a una persona, y quién podrá ver y controlar los chats.",
  html:`
  <div class="field"><div class="q">¿El agente debe derivar a un humano en algún momento?</div>
@@ -293,7 +398,7 @@ const STEPS=[
    <div id="visorRows"></div>
    <button type="button" class="add-row" data-add="visor">+ Agregar persona con acceso</button></div>`},
 
-{name:"Reportes y remarketing", kicker:"07 · Inteligencia", title:"Reportes y reactivación de clientes",
+{name:"Reportes y remarketing", kicker:"08 · Inteligencia", title:"Reportes y reactivación de clientes",
  intro:"¿Quieres saber cuánta gente escribe, cuántos se derivan y cuántos compran? ¿Y reactivar clientes? Configúralo aquí.",
  html:`
  <div class="field"><div class="q">¿Necesitas reportes de la actividad del agente?</div>
@@ -313,7 +418,7 @@ const STEPS=[
      <label class="mini">¿A qué clientes reactivar?</label>
      ${checks("rmk_target",["Los que escribieron y no compraron","Clientes que ya compraron (recompra)","Clientes antiguos inactivos"])}</div></div>`},
 
-{name:"WhatsApp y alcance", kicker:"08 · Cierre técnico", title:"Número de WhatsApp y alcance del proyecto",
+{name:"WhatsApp y alcance", kicker:"09 · Cierre técnico", title:"Número de WhatsApp y alcance del proyecto",
  intro:"Casi listo. Solo necesitamos el número que usará el agente y confirmar qué NO incluye el proyecto.",
  html:`
  <div class="field"><div class="q">Número de WhatsApp para el agente</div>
@@ -327,7 +432,7 @@ const STEPS=[
  <div class="field"><div class="q">Notas u observaciones libres</div>
    <textarea data-key="Notas libres" placeholder="Cualquier detalle importante que no se haya preguntado antes."></textarea></div>`},
 
-{name:"Conformidad", kicker:"09 · Firma", title:"Declaración de conformidad",
+{name:"Conformidad", kicker:"10 · Firma", title:"Declaración de conformidad",
  intro:"Revisa que todo esté correcto y firma digitalmente. Al descargar el PDF, esta declaración queda como constancia.",
  html:`
  <div class="decl">
@@ -458,16 +563,42 @@ document.getElementById('downloadBtn').addEventListener('click',async ()=>{
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(respuestas)
     });
-    btn.textContent="✅ ¡Enviado!";
-    setTimeout(()=>{alert("¡Listo! Tus requerimientos fueron enviados a Poseidón MK. Te llegará una copia por WhatsApp al número que indicaste. 🔱");},300);
+    mostrarPantallaExito(respuestas);
   }catch(e){
     btn.textContent="⚠️ Guarda tu PDF";
     alert("No se pudo enviar automáticamente, pero puedes descargar tu PDF y enviárnoslo. 🔱");
     buildResumen();
     setTimeout(()=>window.print(),400);
+    setTimeout(()=>{btn.textContent=txtOrig;btn.disabled=false;},4000);
   }
-  setTimeout(()=>{btn.textContent=txtOrig;btn.disabled=false;},4000);
 });
+
+// Pantalla final de éxito (reemplaza todo el formulario)
+function mostrarPantallaExito(datos){
+  const nombre = datos.contacto_nombre || '';
+  const empresa = datos.empresa || '';
+  document.querySelector('.progress-shell').style.display='none';
+  document.getElementById('form').innerHTML = `
+    <div style="text-align:center;padding:40px 20px;animation:rise .5s ease">
+      <div style="width:88px;height:88px;margin:0 auto 24px;border-radius:50%;
+        background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;
+        box-shadow:0 0 40px rgba(43,157,255,.5)">
+        <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#04101f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h2 style="font-family:'Space Grotesk';font-size:1.6rem;margin-bottom:12px">¡Requerimientos enviados! 🔱</h2>
+      <p style="color:var(--muted);font-size:1rem;max-width:52ch;margin:0 auto 8px">
+        Gracias${nombre?', <b style="color:var(--text)">'+nombre+'</b>':''}. Hemos recibido la información de
+        ${empresa?'<b style="color:var(--text)">'+empresa+'</b>':'tu empresa'} correctamente.</p>
+      <p style="color:var(--muted);font-size:.95rem;max-width:52ch;margin:0 auto 28px">
+        📲 Te enviamos una <b style="color:var(--gold)">copia de respaldo por WhatsApp</b> al número que indicaste.
+        Nuestro equipo la revisará y te contactará pronto para dar el siguiente paso. 🚀</p>
+      <div style="background:var(--surface);border:1px solid var(--border-lit);border-radius:14px;padding:18px 22px;max-width:400px;margin:0 auto">
+        <div style="color:var(--gold);font-family:'Space Grotesk';font-size:.8rem;letter-spacing:1px;margin-bottom:6px">POSEIDÓN MK</div>
+        <div style="color:var(--muted);font-size:.88rem">Ya puedes cerrar esta ventana.<br>¡Gracias por confiar en nosotros! 💪</div>
+      </div>
+    </div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 
 // Recolecta todas las respuestas del formulario en un objeto
 function recolectarTodo(){
@@ -484,10 +615,20 @@ function recolectarTodo(){
     contacto_nombre:v("Contacto - Nombre"), contacto_cargo:v("Contacto - Cargo"),
     contacto_telefono:v("Contacto - Teléfono"), contacto_correo:v("Contacto - Correo"),
     ciudad_pais:v("Ciudad / País"),
+    sector:g("sector"),
+    sector_detalle:{
+      salud:{especialidades:v("Salud - Especialidades"),citas:g("salud_citas"),profesionales:g("salud_profesionales"),confirma:g("salud_confirma"),motivo:g("salud_motivo"),seguros:v("Salud - Seguros")},
+      educacion:{formacion:v("Edu - Formación"),cupos:g("edu_cupos"),inscripciones:g("edu_inscripciones"),modalidad:g("edu_modalidad"),certificado:g("edu_certificado"),requisitos:v("Edu - Requisitos")},
+      automotriz:{servicios:v("Auto - Servicios"),datos_vehiculo:g("auto_datos"),cotiza:g("auto_cotiza"),recordar:g("auto_recordar"),agenda:g("auto_agenda"),domicilio:g("auto_domicilio")},
+      comercio:{productos:v("Comercio - Productos"),stock:g("com_stock"),envios:g("com_envios"),entrega:g("com_entrega"),mayoreo:g("com_mayoreo"),catalogo:g("com_catalogo")},
+      profesional:{servicios:v("Prof - Servicios"),cobro:g("prof_cobro"),gratis:g("prof_gratis"),califica:g("prof_califica"),reunion:g("prof_reunion")},
+      hoteleria:{oferta:v("Hotel - Oferta"),reservas:g("hotel_reservas"),tipos:v("Hotel - Tipos"),anticipo:g("hotel_anticipo"),politicas:g("hotel_politicas"),clientes:g("hotel_clientes")},
+      otro:{dedicacion:v("Otro - Dedicación"),especial:v("Otro - Especial"),agenda:g("otro_agenda"),stock:g("otro_stock")}
+    },
     comportamiento:v("Descripción del comportamiento"), nombre_agente:v("Nombre del agente"),
     objetivo:g("objetivo"), tono:g("tono"), saludo:v("Saludo inicial"),
     horario:g("horario")==="Horario específico"?v("Horario específico"):g("horario"), seguimiento:g("seguimiento"),
-    tipo_oferta:g("tipo_oferta"), oferta:rep("oferta"), material:g("material"),
+    oferta:rep("oferta"), material:g("material"),
     proformas:g("proformas"), contenido_proforma:v("Contenido de la proforma"),
     pagos:g("pagos"), pasarela:g("pasarela"), cuotas:g("cuotas"), comprobante:g("comprobante"), factura:g("factura"),
     datos_capturar:labelsChk("datos"), datos_adicionales:v("Datos adicionales"), almacen:g("almacen"),
@@ -527,7 +668,8 @@ function buildResumen(){
     ${item("Empresa",val("Empresa"))}${item("A qué se dedica",val("A qué se dedica"))}
     ${item("Sitio web",val("Sitio web"))}${item("Instagram",val("Instagram"))}${item("Facebook",val("Facebook"))}${item("TikTok / Otra",val("TikTok / Otra red"))}
     ${item("Contacto",[val("Contacto - Nombre"),val("Contacto - Cargo"),val("Contacto - Teléfono"),val("Contacto - Correo")].filter(Boolean).join(' · '))}
-    ${item("Ciudad / País",val("Ciudad / País"))}</div>
+    ${item("Ciudad / País",val("Ciudad / País"))}
+    ${item("Sector",g("sector"))}</div>
 
   <div class="r-sec"><h2>2 · El agente</h2>
     ${item("Comportamiento deseado",val("Descripción del comportamiento"))}
@@ -538,7 +680,6 @@ function buildResumen(){
     ${item("Seguimiento",g("seguimiento"))}</div>
 
   <div class="r-sec"><h2>3 · Oferta</h2>
-    ${item("Tipo de oferta",g("tipo_oferta"))}
     ${item("Servicios / productos",repRows("oferta"))}
     ${item("Material digital",g("material"))}</div>
 
